@@ -29,6 +29,18 @@ is
 
       Append (Database, (Key, Email));
       DB_Model := Add (DB_Model, (Key, Email));
+      pragma Assert
+        (
+           ((for all I in Formal_Model.Model (Database) =>
+             (for all J in Formal_Model.Model (Database) =>
+                (if Formal_Model.Element (Formal_Model.Model (Database), I) =
+                   Formal_Model.Element (Formal_Model.Model (Database), J)
+                 then I = J)))
+
+         --  Database and DB_Model contain the same pairs
+
+         and (for all Pair of Database => Contains (DB_Model, Pair))
+         and (for all Pair of DB_Model => Contains (Database, Pair))));
    end Add_To_Database;
 
    --------------
@@ -101,7 +113,17 @@ is
    begin
       Delete (Database, Pos);
       DB_Model := Remove (DB_Model, (Key, Email));
-      pragma Assert (for all Pair of DB_Model => Contains (Database, Pair));
+      pragma Assert ((for all I in Formal_Model.Model (Database) =>
+         (for all J in Formal_Model.Model (Database) =>
+              (if Formal_Model.Element (Formal_Model.Model (Database), I) =
+                   Formal_Model.Element (Formal_Model.Model (Database), J)
+               then I = J))));
+
+      --  Database and DB_Model contain the same pairs
+
+      pragma Assert (for all Pair of Database => Contains (DB_Model, Pair));
+      pragma Assert ((for all Pair of DB_Model => Contains (Database, Pair)));
+      pragma Assert (Length (DB_Model) = Length (Database));
    end Remove_From_Database;
 
 end Database;

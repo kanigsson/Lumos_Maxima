@@ -1,16 +1,25 @@
 package Email with SPARK_Mode is
 
    type Email_Address_Type is private;
-
-   function Mk_Email (S : String) return Email_Address_Type;
-   function Get_Email_String (X : Email_Address_Type) return String;
-
    No_Email : constant Email_Address_Type;
 
 private
 
-  type Email_Address_Type is new Natural;
+   --  emails are at most 256 characters long, see
+   --  https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address
+   type Length_Type is range 0 .. 256;
 
-  No_Email : constant Email_Address_Type := 0;
+   type Email_Address_Buffer_Type is array (Length_Type range <>) of Character;
+
+   type Email_Address_Var_Type (Len : Length_Type := 20) is record
+      Ct : Email_Address_Buffer_Type (1 .. Len);
+   end record;
+
+   type Email_Address_Type is record
+      Ct : Email_Address_Var_Type;
+   end record;
+
+   No_Email : constant Email_Address_Type :=
+     (Ct => (Len => 0, Ct => (1 .. 0 => ' ')));
 
 end Email;

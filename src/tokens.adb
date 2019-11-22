@@ -136,6 +136,22 @@ is
       Request_Maps.Include (Pending_Add_Map, T, (Key, Email));
       Token_Model.Tokens := Add (Token_Model.Tokens, T, (Key, Email, True));
       Token := T;
+      pragma Assert
+        ((for all T of Pending_Add_Map =>
+              Has_Key (Token_Model.Tokens, T)
+          and then Request_Maps.Element (Pending_Add_Map, T).Key =
+            Get (Token_Model.Tokens, T).Key
+          and then Request_Maps.Element (Pending_Add_Map, T).Email =
+            Get (Token_Model.Tokens, T).Email
+          and then Get (Token_Model.Tokens, T).Is_Add));
+      pragma Assert
+        (for all T of Pending_Remove_Map =>
+           Has_Key (Token_Model.Tokens, T)
+         and then Request_Maps.Element (Pending_Remove_Map, T).Key =
+             Get (Token_Model.Tokens, T).Key
+         and then Request_Maps.Element (Pending_Remove_Map, T).Email =
+             Get (Token_Model.Tokens, T).Email
+         and then not Get (Token_Model.Tokens, T).Is_Add);
    end Include_Add_Request;
 
    ----------------------------
@@ -161,6 +177,22 @@ is
       Request_Maps.Include (Pending_Remove_Map, T, (Key, Email));
       Token_Model.Tokens := Add (Token_Model.Tokens, T, (Key, Email, False));
       Token := T;
+      pragma Assert
+        ((for all T of Pending_Add_Map =>
+              Has_Key (Token_Model.Tokens, T)
+          and then Request_Maps.Element (Pending_Add_Map, T).Key =
+            Get (Token_Model.Tokens, T).Key
+          and then Request_Maps.Element (Pending_Add_Map, T).Email =
+            Get (Token_Model.Tokens, T).Email
+          and then Get (Token_Model.Tokens, T).Is_Add));
+      pragma Assert
+        (for all T of Pending_Remove_Map =>
+           Has_Key (Token_Model.Tokens, T)
+         and then Request_Maps.Element (Pending_Remove_Map, T).Key =
+             Get (Token_Model.Tokens, T).Key
+         and then Request_Maps.Element (Pending_Remove_Map, T).Email =
+             Get (Token_Model.Tokens, T).Email
+         and then not Get (Token_Model.Tokens, T).Is_Add);
    end Include_Remove_Request;
 
    ---------------
