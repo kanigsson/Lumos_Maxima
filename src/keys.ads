@@ -12,6 +12,6 @@ private
    No_Key : constant Key_Type := 0;
    
    function From_String (S : String) return Key_Type is
-      (Integer'Value (S));
+      (Key_Type'Value (S));
    
 end Keys;

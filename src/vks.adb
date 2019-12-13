@@ -43,16 +43,18 @@ package body VKS is
 
    function Upload (Request : Status.Data) return Response.Data is
       P : constant AWS.Parameters.List := AWS.Status.Parameters (Request);
-      E : constant Email.Email_Address_Type :=
-        AWS.Parameters.Get (P, "email");
+      E : Email.Email_Address_Type;
       Key : constant Keys.Key_Type :=
         Keys.From_String (AWS.Parameters.Get (P, "key"));
       Token : Tokens.Token_Type;
    begin
+      Email.To_Email_Address (AWS.Parameters.Get (P, "email"), E);
+      --  check for valid email
+      pragma Assert (E in Email.Valid_Email_Address_Type);
       Server.Request_Add (E, Key, Token);
       declare
          L : constant String :=
-           "<a href=""/vks/v1/request_verify?token=" & Tokens.To_String (Token)
+           "<a href=""/vks/v1/request-verify?token=" & Tokens.To_String (Token)
            &"""> Link to validate the token</a>";
          S : constant String :=
            "This is the confirmation link to verify the add." &
